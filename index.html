@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Nutritionnel - Mélanie L.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+        }
+        
+        .dashboard {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 4px 12px rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .left-column,
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            color: white;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+        
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .objectives {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e8ecf0;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4ecdc4 0%, #44a08d 100%);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 12px 24px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.06);
+            border-color: #667eea;
+        }
+        
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+        }
+        
+        .stat-unit {
+            font-size: 16px;
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+        
+        .imc-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            color: white;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .imc-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 18px;
+            z-index: -1;
+            filter: blur(8px);
+            opacity: 0.3;
+        }
+        
+        .imc-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        
+        .imc-value {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        
+        .imc-category {
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+        
+        .calories-section {
+            background: #ffffff;
+            border: 1px solid #e8ecf0;
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .calories-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .calories-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .calories-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            transition: all 0.2s ease;
+        }
+        
+        .calories-row:hover {
+            background: #e3f2fd;
+            transform: translateX(4px);
+        }
+        
+        .calories-row:last-child {
+            margin-bottom: 0;
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+        }
+        
+        .calories-row:last-child:hover {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        }
+        
+        .calories-label {
+            color: #5a6c7d;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .calories-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        .macros {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .macro-card {
+            background: #ffffff;
+            border: 1px solid #e8ecf0;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .macro-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .macro-card.protein::before {
+            background: linear-gradient(90deg, #9b59b6 0%, #8e44ad 100%);
+        }
+        
+        .macro-card.lipids::before {
+            background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+        }
+        
+        .macro-card.carbs::before {
+            background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .macro-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .macro-card.protein:hover {
+            border-color: #9b59b6;
+            box-shadow: 0 8px 16px rgba(155, 89, 182, 0.2);
+        }
+        
+        .macro-card.lipids:hover {
+            border-color: #2ecc71;
+            box-shadow: 0 8px 16px rgba(46, 204, 113, 0.2);
+        }
+        
+        .macro-card.carbs:hover {
+            border-color: #f39c12;
+            box-shadow: 0 8px 16px rgba(243, 156, 18, 0.2);
+        }
+        
+        .macro-name {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .macro-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+        }
+        
+        .macro-unit {
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+        
+        /* Animations fluides */
+        .dashboard > * {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .dashboard > *:nth-child(1) { animation-delay: 0.1s; }
+        .dashboard > *:nth-child(2) { animation-delay: 0.2s; }
+        .dashboard > *:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 30px 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .macros {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1 class="name">Mélanie L.</h1>
+            <p class="objectives">
+                <strong>Objectifs :</strong> Perte de poids • Mieux manger • Meilleure longévité
+            </p>
+        </div>
+        
+        <div class="left-column">
+            <div>
+                <div class="section-title">Informations personnelles</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">📏</span>
+                        <div class="stat-label">Taille</div>
+                        <div class="stat-value">170<span class="stat-unit">cm</span></div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <span class="stat-icon">⚖️</span>
+                        <div class="stat-label">Poids</div>
+                        <div class="stat-value">91<span class="stat-unit">kg</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="imc-section">
+                <div class="imc-label">📊 Indice de masse corporelle</div>
+                <div class="imc-value">31,5</div>
+                <div class="imc-category">Obésité type I</div>
+            </div>
+        </div>
+        
+        <div class="right-column">
+            <div class="calories-section">
+                <h3 class="calories-title">Besoins & Objectifs Caloriques</h3>
+                <div class="calories-row">
+                    <span class="calories-label">Métabolisme de base</span>
+                    <span class="calories-value">1 660 kcal</span>
+                </div>
+                <div class="calories-row">
+                    <span class="calories-label">Dépense énergétique</span>
+                    <span class="calories-value">2 570 kcal</span>
+                </div>
+                <div class="calories-row">
+                    <span class="calories-label">Objectif quotidien</span>
+                    <span class="calories-value">2 200 kcal</span>
+                </div>
+            </div>
+            
+            <div>
+                <div class="section-title">Répartition des macronutriments</div>
+                <div class="macros">
+                    <div class="macro-card protein">
+                        <div class="macro-name">Protéines</div>
+                        <div class="macro-value">110<span class="macro-unit">g</span></div>
+                    </div>
+                    
+                    <div class="macro-card lipids">
+                        <div class="macro-name">Lipides</div>
+                        <div class="macro-value">85<span class="macro-unit">g</span></div>
+                    </div>
+                    
+                    <div class="macro-card carbs">
+                        <div class="macro-name">Glucides</div>
+                        <div class="macro-value">245<span class="macro-unit">g</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
